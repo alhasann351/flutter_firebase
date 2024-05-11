@@ -12,10 +12,13 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
+        actions: [
+          IconButton(onPressed: (){}, icon: const Icon(Icons.logout_outlined))
+        ],
         centerTitle: true,
         backgroundColor: Colors.blue,
         title: const Text(
