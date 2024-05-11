@@ -19,15 +19,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  bool loading = false;
 
   final _auth = FirebaseAuth.instance;
 
   void login(){
+    setState(() {
+      loading = true;
+    });
+
     _auth.signInWithEmailAndPassword(email: emailController.text.toString(), password: passwordController.text.toString(),).then((value){
-      Utils().showToast(value.user!.email.toString());
+      Utils().showToast('Login success');
       Navigator.push(context, MaterialPageRoute(builder: (context) => const PostScreen()));
+
+      setState(() {
+        loading = false;
+      });
+
     }).onError((error, stackTrace){
       Utils().showToast(error.toString());
+
+      setState(() {
+        loading = false;
+      });
+
     });
   }
 
@@ -144,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundButton(
                   title: 'Login',
+                  loading: loading,
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
                       login();
