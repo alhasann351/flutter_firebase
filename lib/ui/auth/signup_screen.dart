@@ -29,6 +29,28 @@ class _SignupScreenState extends State<SignupScreen> {
     passwordController.dispose();
   }
 
+  void signup(){
+    setState(() {
+      loading = true;
+    });
+
+    _auth.createUserWithEmailAndPassword(
+        email: emailController.text.toString(),
+        password: passwordController.text.toString()
+    ).then((value){
+      Utils().showToast('Signup success');
+      setState(() {
+        loading = false;
+      });
+    }).onError((error, stackTrace){
+      Utils().showToast(error.toString());
+      setState(() {
+        loading = false;
+      });
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,25 +156,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 title: 'Signup',
                 loading: loading,
                 onTap: () {
-                  setState(() {
-                    loading = true;
-                  });
-
                   if (_formKey.currentState!.validate()) {
-                    _auth.createUserWithEmailAndPassword(
-                      email: emailController.text.toString(),
-                      password: passwordController.text.toString()
-                    ).then((value){
-                      setState(() {
-                        loading = false;
-                      });
-                    }).onError((error, stackTrace){
-                      Utils().showToast(error.toString());
-                      setState(() {
-                        loading = false;
-                      });
-
-                    });
+                    signup();
                   }
                 }),
             const SizedBox(
