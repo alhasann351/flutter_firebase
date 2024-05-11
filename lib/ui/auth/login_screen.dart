@@ -61,6 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    validator: (value){
+                      if(value!.isEmpty){
+                        return 'Enter email';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20,),
                   TextFormField(
@@ -86,12 +92,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    validator: (value){
+                      if(value!.isEmpty){
+                        return 'Enter password';
+                      }
+                      return null;
+                    },
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20,),
-            RoundButton(title: 'Login', onTap: () {}),
+            const SizedBox(height: 50,),
+            RoundButton(title: 'Login', onTap: () {
+              if(_formKey.currentState!.validate()){
+
+              }
+            }),
           ],
         ),
       ),
