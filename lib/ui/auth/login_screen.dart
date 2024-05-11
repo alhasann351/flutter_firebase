@@ -17,6 +17,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,

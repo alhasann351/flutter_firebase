@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
 import 'package:flutter_firebase/ui/widgets/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -13,6 +15,16 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +130,12 @@ class _SignupScreenState extends State<SignupScreen> {
             RoundButton(
                 title: 'Signup',
                 onTap: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    _auth.createUserWithEmailAndPassword(
+                      email: emailController.text.toString(),
+                      password: passwordController.text.toString(),
+                    );
+                  }
                 }),
             const SizedBox(
               height: 30,
@@ -126,12 +143,18 @@ class _SignupScreenState extends State<SignupScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account?", style: TextStyle(
-                  fontSize: 15,
-                ),),
+                const Text(
+                  "Already have an account?",
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                ),
                 TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()));
                     },
                     child: const Text(
                       'Login',
