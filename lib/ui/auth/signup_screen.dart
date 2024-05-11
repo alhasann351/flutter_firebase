@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
 import 'package:flutter_firebase/ui/widgets/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_firebase/utils/utils.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,6 +18,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+
+  bool loading = false;
 
   @override
   void dispose() {
@@ -129,12 +132,27 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             RoundButton(
                 title: 'Signup',
+                loading: loading,
                 onTap: () {
+                  setState(() {
+                    loading = true;
+                  });
+
                   if (_formKey.currentState!.validate()) {
                     _auth.createUserWithEmailAndPassword(
                       email: emailController.text.toString(),
-                      password: passwordController.text.toString(),
-                    );
+                      password: passwordController.text.toString()
+                    ).then((value){
+                      setState(() {
+                        loading = false;
+                      });
+                    }).onError((error, stackTrace){
+                      Utils().showToast(error.toString());
+                      setState(() {
+                        loading = false;
+                      });
+
+                    });
                   }
                 }),
             const SizedBox(
