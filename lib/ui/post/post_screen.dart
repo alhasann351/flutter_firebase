@@ -58,8 +58,38 @@ class _PostScreenState extends State<PostScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
+            child: StreamBuilder(
+              stream: _databaseRef.onValue,
+              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.blue,
+                  ));
+                } else {
+                  Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
+                  List<dynamic> list = [];
+                  list.clear();
+                  list = map.values.toList();
+
+                  return ListView.builder(
+                    itemCount: snapshot.data!.snapshot.children.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(list[index]['title']),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+          Expanded(
             child: FirebaseAnimatedList(
-              defaultChild: const Center(child: CircularProgressIndicator(color: Colors.blue,)),
+              defaultChild: const Center(
+                  child: CircularProgressIndicator(
+                color: Colors.blue,
+              )),
               query: _databaseRef,
               itemBuilder: (context, snapshot, animation, index) {
                 return ListTile(
