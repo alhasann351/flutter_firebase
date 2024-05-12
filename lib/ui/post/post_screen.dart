@@ -26,7 +26,10 @@ class _PostScreenState extends State<PostScreen> {
             onPressed: () {
               _auth.signOut().then((value) {
                 Utils().showToast('Logout success');
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
               }).onError((error, stackTrace) {
                 Utils().showToast(error.toString());
               });
@@ -43,6 +46,14 @@ class _PostScreenState extends State<PostScreen> {
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
         ),
       ),
     );
