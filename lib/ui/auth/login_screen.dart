@@ -5,6 +5,7 @@ import 'package:flutter_firebase/ui/post/post_screen.dart';
 import 'package:flutter_firebase/ui/widgets/round_button.dart';
 import 'package:flutter_firebase/utils/utils.dart';
 
+import 'login_phone_number.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -180,6 +181,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: const Text(
                         'Signup',
+                        style: TextStyle(
+                          fontSize: 17,
+                        ),
+                      )),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Login with phone number?", style: TextStyle(
+                    fontSize: 15,
+                  ),),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPhoneNumber()));
+                      },
+                      child: const Text(
+                        'Click here',
                         style: TextStyle(
                           fontSize: 17,
                         ),
