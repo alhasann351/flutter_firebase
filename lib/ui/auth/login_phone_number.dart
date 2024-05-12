@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/ui/auth/verify_code_screen.dart';
+import 'package:flutter_firebase/utils/utils.dart';
 
 import '../widgets/round_button.dart';
 
@@ -14,6 +17,8 @@ class _LoginPhoneNumberState extends State<LoginPhoneNumber> {
   final _formKey = GlobalKey<FormState>();
 
   bool loading = false;
+
+  final _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -52,6 +57,7 @@ class _LoginPhoneNumberState extends State<LoginPhoneNumber> {
               child: Column(
                 children: [
                   TextFormField(
+                    keyboardType: TextInputType.number,
                     controller: phoneNumberController,
                     decoration: InputDecoration(
                       suffixIcon: const Icon(Icons.phone_outlined),
@@ -95,7 +101,35 @@ class _LoginPhoneNumberState extends State<LoginPhoneNumber> {
                 loading: loading,
                 onTap: () {
                   if (_formKey.currentState!.validate()) {
-
+                    setState(() {
+                      loading = true;
+                    });
+                    _auth.verifyPhoneNumber(
+                      phoneNumber: phoneNumberController.text,
+                      verificationCompleted: (_){
+                        setState(() {
+                          loading = false;
+                        });
+                      },
+                      verificationFailed: (e){
+                        Utils().showToast(e.toString());
+                        setState(() {
+                          loading = false;
+                        });
+                      },
+                      codeSent: (String verificationId, int? token){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyCodeScreen(verificationId: verificationId,)));
+                        setState(() {
+                          loading = false;
+                        });
+                        },
+                      codeAutoRetrievalTimeout: (e){
+                        Utils().showToast(e.toString());
+                        setState(() {
+                          loading = false;
+                        });
+                      },
+                    );
                   }
                 }),
           ],
