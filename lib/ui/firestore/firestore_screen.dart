@@ -81,11 +81,16 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         onTap: (){
-                          reference.doc(snapshot.data!.docs[index]['id'].toString()).update(
+                          /*reference.doc(snapshot.data!.docs[index]['id'].toString()).update(
                               {
                                 'title' : 'Gali'
                               }).then((value){
                             Utils().showToast('Update success');
+                          }).onError((error, stackTrace){
+                            Utils().showToast(error.toString());
+                          });*/
+                          reference.doc(snapshot.data!.docs[index]['id'].toString()).delete().then((value){
+                            Utils().showToast('Delete success');
                           }).onError((error, stackTrace){
                             Utils().showToast(error.toString());
                           });
