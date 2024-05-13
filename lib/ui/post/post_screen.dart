@@ -15,8 +15,17 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final searchController = TextEditingController();
+
   final _auth = FirebaseAuth.instance;
   final _databaseRef = FirebaseDatabase.instance.ref('Posts');
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    searchController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,59 +62,106 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: StreamBuilder(
-              stream: _databaseRef.onValue,
-              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.blue,
-                  ));
-                } else {
-                  Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
-                  List<dynamic> list = [];
-                  list.clear();
-                  list = map.values.toList();
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /*Expanded(
+              child: StreamBuilder(
+                stream: _databaseRef.onValue,
+                builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.blue,
+                    ));
+                  } else {
+                    Map<dynamic, dynamic> map = snapshot.data!.snapshot.value as dynamic;
+                    List<dynamic> list = [];
+                    list.clear();
+                    list = map.values.toList();
 
-                  return ListView.builder(
-                    itemCount: snapshot.data!.snapshot.children.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(list[index]['title']),
-                      );
-                    },
-                  );
-                }
+                    return ListView.builder(
+                      itemCount: snapshot.data!.snapshot.children.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(list[index]['title']),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),*/
+            TextFormField(
+              controller: searchController,
+              onChanged: (String value){
+                setState(() {
+
+                });
               },
-            ),
-          ),
-          Expanded(
-            child: FirebaseAnimatedList(
-              defaultChild: const Center(
-                  child: CircularProgressIndicator(
-                color: Colors.blue,
-              )),
-              query: _databaseRef,
-              itemBuilder: (context, snapshot, animation, index) {
-                return ListTile(
-                  title: Text(
-                    snapshot.child('title').value.toString(),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+              decoration: InputDecoration(
+                suffixIcon: const Icon(Icons.search_outlined),
+                hintText: 'Search',
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: Colors.blue,
+                    width: 2,
                   ),
-                );
-              },
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: Colors.blue,
+                    width: 2,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: FirebaseAnimatedList(
+                defaultChild: const Center(
+                    child: CircularProgressIndicator(
+                  color: Colors.blue,
+                )),
+                query: _databaseRef,
+                itemBuilder: (context, snapshot, animation, index) {
+
+                  final title = snapshot.child('title').value.toString();
+
+                  if(searchController.text.isEmpty){
+                    return ListTile(
+                      title: Text(
+                        snapshot.child('title').value.toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  }else if(title.toLowerCase().contains(searchController.text.toLowerCase())){
+                    return ListTile(
+                      title: Text(
+                        snapshot.child('title').value.toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  }else{
+                    return Container();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
