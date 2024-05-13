@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_firebase/ui/firestore/firestore_screen.dart';
 import 'package:flutter_firebase/ui/post/post_screen.dart';
 import 'package:flutter_firebase/ui/widgets/round_button.dart';
 import 'package:flutter_firebase/utils/utils.dart';
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     _auth.signInWithEmailAndPassword(email: emailController.text.toString(), password: passwordController.text.toString(),).then((value){
       Utils().showToast('Login success');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const PostScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const FireStoreScreen()));
 
       setState(() {
         loading = false;
