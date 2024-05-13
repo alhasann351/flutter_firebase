@@ -97,10 +97,8 @@ class _PostScreenState extends State<PostScreen> {
             ),*/
             TextFormField(
               controller: searchController,
-              onChanged: (String value){
-                setState(() {
-
-                });
+              onChanged: (String value) {
+                setState(() {});
               },
               decoration: InputDecoration(
                 suffixIcon: const Icon(Icons.search_outlined),
@@ -129,10 +127,9 @@ class _PostScreenState extends State<PostScreen> {
                 )),
                 query: _databaseRef,
                 itemBuilder: (context, snapshot, animation, index) {
-
                   final title = snapshot.child('title').value.toString();
 
-                  if(searchController.text.isEmpty){
+                  if (searchController.text.isEmpty) {
                     return ListTile(
                       title: Text(
                         snapshot.child('title').value.toString(),
@@ -142,8 +139,36 @@ class _PostScreenState extends State<PostScreen> {
                           color: Colors.black,
                         ),
                       ),
+                      subtitle: Text(
+                        snapshot.child('id').value.toString(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      trailing: PopupMenuButton(
+                        icon: const Icon(Icons.more_vert_outlined, color: Colors.black,),
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 1,
+                            child: ListTile(
+                              leading: Icon(Icons.edit),
+                              title: Text('Edit'),
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 2,
+                            child: ListTile(
+                              leading: Icon(Icons.delete),
+                              title: Text('Delete'),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
-                  }else if(title.toLowerCase().contains(searchController.text.toLowerCase())){
+                  } else if (title
+                      .toLowerCase()
+                      .contains(searchController.text.toLowerCase())) {
                     return ListTile(
                       title: Text(
                         snapshot.child('title').value.toString(),
@@ -153,8 +178,15 @@ class _PostScreenState extends State<PostScreen> {
                           color: Colors.black,
                         ),
                       ),
+                      subtitle: Text(
+                        snapshot.child('id').value.toString(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
                     );
-                  }else{
+                  } else {
                     return Container();
                   }
                 },

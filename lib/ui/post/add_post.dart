@@ -103,8 +103,10 @@ class _AddPostState extends State<AddPost> {
                       loading = true;
                     });
 
-                    databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).set({
-                      'id' : DateTime.now().millisecondsSinceEpoch.toString(),
+                    String id = DateTime.now().millisecondsSinceEpoch.toString();
+
+                    databaseRef.child(id).set({
+                      'id' : id,
                       'title' : postController.text.toString(),
                     }).then((value){
                       Utils().showToast('Post added');
