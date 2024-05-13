@@ -148,14 +148,18 @@ class _PostScreenState extends State<PostScreen> {
                         ),
                       ),
                       trailing: PopupMenuButton(
-                        icon: const Icon(Icons.more_vert_outlined, color: Colors.black,),
+                        icon: const Icon(
+                          Icons.more_vert_outlined,
+                          color: Colors.black,
+                        ),
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             value: 1,
                             child: ListTile(
-                              onTap: (){
+                              onTap: () {
                                 Navigator.pop(context);
-                                showMyDialog();
+                                showMyDialog(title,
+                                    snapshot.child('id').value.toString());
                               },
                               leading: const Icon(Icons.edit),
                               title: const Text('Edit'),
@@ -214,38 +218,57 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
 
-  Future<void> showMyDialog(String title) async{
+  Future<void> showMyDialog(String title, String id) async {
     editController.text = title;
 
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        title: const Text('Update'),
-        content: Container(child: TextFormField(
-          controller: editController,
-          decoration: InputDecoration(
-            suffixIcon: const Icon(Icons.update),
-            hintText: 'Enter update text',
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-                width: 2,
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Update'),
+            content: Container(
+              child: TextFormField(
+                controller: editController,
+                decoration: InputDecoration(
+                  suffixIcon: const Icon(Icons.update),
+                  hintText: 'Enter update text',
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2,
+                    ),
+                  ),
+                ),
               ),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-                width: 2,
-              ),
-            ),
-          ),
-        ),),
-        actions: [
-          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text('Update')),
-          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text('Cancel')),
-        ],
-      );
-    });
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _databaseRef.child(id).update({
+                      'title' : editController.text.toString(),
+                    }).then((value){
+                      Utils().showToast('Update success');
+                    }).onError((error, stackTrace){
+                      Utils().showToast(error.toString());
+                    });
+                  },
+                  child: const Text('Update')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel')),
+            ],
+          );
+        });
   }
 }
