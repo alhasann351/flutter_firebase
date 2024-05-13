@@ -16,6 +16,7 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   final searchController = TextEditingController();
+  final editController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
   final _databaseRef = FirebaseDatabase.instance.ref('Posts');
@@ -149,11 +150,15 @@ class _PostScreenState extends State<PostScreen> {
                       trailing: PopupMenuButton(
                         icon: const Icon(Icons.more_vert_outlined, color: Colors.black,),
                         itemBuilder: (context) => [
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 1,
                             child: ListTile(
-                              leading: Icon(Icons.edit),
-                              title: Text('Edit'),
+                              onTap: (){
+                                Navigator.pop(context);
+                                showMyDialog();
+                              },
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Edit'),
                             ),
                           ),
                           const PopupMenuItem(
@@ -207,5 +212,40 @@ class _PostScreenState extends State<PostScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> showMyDialog(String title) async{
+    editController.text = title;
+
+    return showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text('Update'),
+        content: Container(child: TextFormField(
+          controller: editController,
+          decoration: InputDecoration(
+            suffixIcon: const Icon(Icons.update),
+            hintText: 'Enter update text',
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Colors.blue,
+                width: 2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Colors.blue,
+                width: 2,
+              ),
+            ),
+          ),
+        ),),
+        actions: [
+          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text('Update')),
+          TextButton(onPressed: (){Navigator.pop(context);}, child: const Text('Cancel')),
+        ],
+      );
+    });
   }
 }
