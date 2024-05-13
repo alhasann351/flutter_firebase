@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -19,6 +20,7 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
   final editController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+  final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +63,27 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return const ListTile(
-                    title: Text('Hasan'),
-                  );
-                },
-              ),
+            StreamBuilder<QuerySnapshot>(
+              stream: fireStore,
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const CircularProgressIndicator();
+                }
+                if(snapshot.hasError){
+                  return const Text('Some error');
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(snapshot.data!.docs[index]['title'].toString()),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -77,8 +91,10 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddFireStoreData()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddFireStoreData()));
         },
         child: const Icon(
           Icons.add,
@@ -123,7 +139,6 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-
                   },
                   child: const Text('Update')),
               TextButton(
