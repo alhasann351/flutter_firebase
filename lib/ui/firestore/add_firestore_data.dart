@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,17 @@ class _AddFireStoreDataState extends State<AddFireStoreData> {
 
   bool loading = false;
 
-  final databaseRef = FirebaseDatabase.instance.ref('Posts');
+  final fireStore = FirebaseFirestore.instance.collection('users');
 
   final _formKey = GlobalKey<FormState>();
 
-  final postController = TextEditingController();
+  final dataController = TextEditingController();
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    postController.dispose();
+    dataController.dispose();
   }
 
   @override
@@ -59,7 +60,8 @@ class _AddFireStoreDataState extends State<AddFireStoreData> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: postController,
+                    maxLines: 4,
+                    controller: dataController,
                     decoration: InputDecoration(
                       suffixIcon: const Icon(Icons.post_add),
                       labelText: 'Add data',
@@ -105,19 +107,17 @@ class _AddFireStoreDataState extends State<AddFireStoreData> {
 
                     String id = DateTime.now().millisecondsSinceEpoch.toString();
 
-                    databaseRef.child(id).set({
+                    fireStore.doc(id).set({
                       'id' : id,
-                      'title' : postController.text.toString(),
+                      'title' : dataController.text.toString(),
                     }).then((value){
-                      Utils().showToast('Data added');
-
                       setState(() {
                         loading = false;
                       });
+                      Utils().showToast('Data added success');
 
                     }).onError((error, stackTrace){
                       Utils().showToast(error.toString());
-
                       setState(() {
                         loading = false;
                       });
