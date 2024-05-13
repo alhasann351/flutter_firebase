@@ -22,6 +22,8 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
   final _auth = FirebaseAuth.instance;
   final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
 
+  CollectionReference reference = FirebaseFirestore.instance.collection('users');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +80,18 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       return ListTile(
+                        onTap: (){
+                          reference.doc(snapshot.data!.docs[index]['id'].toString()).update(
+                              {
+                                'title' : 'Gali'
+                              }).then((value){
+                            Utils().showToast('Update success');
+                          }).onError((error, stackTrace){
+                            Utils().showToast(error.toString());
+                          });
+                        },
                         title: Text(snapshot.data!.docs[index]['title'].toString()),
+                        subtitle : Text(snapshot.data!.docs[index]['id'].toString()),
                       );
                     },
                   ),
