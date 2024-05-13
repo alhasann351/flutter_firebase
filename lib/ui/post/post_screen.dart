@@ -169,6 +169,7 @@ class _PostScreenState extends State<PostScreen> {
                             value: 2,
                             child: ListTile(
                               onTap: (){
+                                Navigator.pop(context);
                                 _databaseRef.child(snapshot.child('id').value.toString()).remove();
                               },
                               leading: Icon(Icons.delete),
