@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/widgets/round_button.dart';
+import 'package:flutter_firebase/utils/utils.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -9,10 +11,11 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   bool loading = false;
+
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       loading: loading,
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            loading = true;
+                          });
 
+                          _auth.sendPasswordResetEmail(email: emailController.text.toString()).then((value) {
+                            setState(() {
+                              loading = false;
+                            });
+                            Utils().showToast('Email sent to recover your password, check email');
+                          }).onError((error, stackTrace) {
+                            Utils().showToast(error.toString());
+                            setState(() {
+                              loading = false;
+                            });
+                          });
                         }
                       }),
                 ],

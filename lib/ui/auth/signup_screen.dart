@@ -42,6 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() {
         loading = false;
       });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     }).onError((error, stackTrace){
       Utils().showToast(error.toString());
       setState(() {
