@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/firestore/firestore_screen.dart';
 import 'package:flutter_firebase/ui/post/post_screen.dart';
+import 'package:flutter_firebase/ui/uploaded_image.dart';
 import 'package:flutter_firebase/utils/utils.dart';
 
 import '../widgets/round_button.dart';
@@ -116,7 +117,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                     try{
                       await _auth.signInWithCredential(credential);
                       
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const FireStoreScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UploadedImage()));
 
                       setState(() {
                         loading = false;
